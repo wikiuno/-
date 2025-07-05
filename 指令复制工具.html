@@ -1,0 +1,1015 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>快捷指令管理面板</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #4361ee;
+            --secondary: #3f37c9;
+            --accent: #4895ef;
+            --success: #4cc9f0;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --gray: #6c757d;
+            --light-gray: #e9ecef;
+            --border-radius: 10px;
+            --box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4edf5 100%);
+            color: var(--dark);
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            padding: 30px 0;
+            margin-bottom: 30px;
+        }
+
+        header h1 {
+            font-size: 2.8rem;
+            color: var(--primary);
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        header p {
+            font-size: 1.2rem;
+            color: var(--gray);
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .app-container {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        .panel {
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            padding: 25px;
+            transition: var(--transition);
+        }
+
+        .panel-title {
+            font-size: 1.5rem;
+            color: var(--primary);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        input, textarea, select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid var(--light-gray);
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        input:focus, textarea:focus, select:focus {
+            border-color: var(--accent);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.15);
+        }
+
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px 25px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            gap: 8px;
+        }
+
+        .btn:hover {
+            background: var(--secondary);
+            transform: translateY(-2px);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+        }
+
+        .btn-outline:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-danger {
+            background: #e63946;
+        }
+
+        .btn-danger:hover {
+            background: #d90429;
+        }
+
+        .btn-success {
+            background: #2a9d8f;
+        }
+
+        .btn-success:hover {
+            background: #21867a;
+        }
+
+        .btn-sm {
+            padding: 8px 15px;
+            font-size: 0.9rem;
+        }
+
+        .actions {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .search-box {
+            display: flex;
+            flex: 1;
+            max-width: 400px;
+        }
+
+        .search-box input {
+            border-radius: var(--border-radius) 0 0 var(--border-radius);
+            border-right: none;
+        }
+
+        .search-box button {
+            border-radius: 0 var(--border-radius) var(--border-radius) 0;
+            padding: 0 20px;
+        }
+
+        .tag-filters {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .tag {
+            background: var(--light-gray);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .tag:hover, .tag.active {
+            background: var(--accent);
+            color: white;
+        }
+
+        .instructions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+        }
+
+        .instruction-card {
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            overflow: hidden;
+            transition: var(--transition);
+            border: 1px solid var(--light-gray);
+        }
+
+        .instruction-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-header {
+            padding: 20px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+            color: white;
+        }
+
+        .card-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card-tags {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+
+        .card-tag {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+        }
+
+        .card-body {
+            padding: 20px;
+        }
+
+        .card-content {
+            margin-bottom: 20px;
+            color: var(--gray);
+            line-height: 1.6;
+        }
+
+        .command-content {
+            background: var(--light);
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            margin-top: 10px;
+            word-break: break-all;
+            position: relative;
+        }
+
+        .card-footer {
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            border-top: 1px solid var(--light-gray);
+            background: #f8f9fa;
+        }
+
+        .copy-btn {
+            cursor: pointer;
+            color: var(--primary);
+            transition: var(--transition);
+        }
+
+        .copy-btn:hover {
+            color: var(--secondary);
+        }
+
+        .no-data {
+            text-align: center;
+            padding: 40px;
+            grid-column: 1 / -1;
+            color: var(--gray);
+        }
+
+        .no-data i {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            color: var(--light-gray);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            width: 100%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--light-gray);
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--gray);
+            transition: var(--transition);
+        }
+
+        .modal-close:hover {
+            color: var(--dark);
+        }
+
+        .modal-body {
+            padding: 20px;
+        }
+
+        .modal-footer {
+            padding: 20px;
+            display: flex;
+            justify-content: flex-end;
+            gap: 15px;
+            border-top: 1px solid var(--light-gray);
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--primary);
+            color: white;
+            padding: 15px 25px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            transform: translateY(100px);
+            opacity: 0;
+            transition: var(--transition);
+            z-index: 1100;
+        }
+
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        @media (max-width: 768px) {
+            .instructions-grid {
+                grid-template-columns: repeat(auto-fill, minmax(100%, 1fr));
+            }
+            
+            .controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .search-box {
+                max-width: 100%;
+            }
+            
+            header h1 {
+                font-size: 2.2rem;
+            }
+        }
+
+        .tag-input {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            padding: 8px;
+            border: 2px solid var(--light-gray);
+            border-radius: var(--border-radius);
+            min-height: 46px;
+        }
+
+        .tag-item {
+            background: var(--accent);
+            color: white;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .tag-item .remove-tag {
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+
+        .tag-input input {
+            flex: 1;
+            min-width: 100px;
+            border: none;
+            padding: 5px;
+            height: 30px;
+        }
+
+        .tag-input input:focus {
+            outline: none;
+            box-shadow: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-bolt"></i> 快捷指令管理面板</h1>
+            <p>创建、管理和快速复制常用命令 - 数据存储在您的浏览器中，多设备同步可通过GitHub部署实现</p>
+        </header>
+
+        <div class="app-container">
+            <!-- 添加快捷指令面板 -->
+            <div class="panel">
+                <h2 class="panel-title"><i class="fas fa-plus-circle"></i> 创建新指令</h2>
+                <form id="addInstructionForm">
+                    <div class="form-group">
+                        <label for="commandName">指令名称</label>
+                        <input type="text" id="commandName" placeholder="例如：Git提交" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="commandContent">指令内容</label>
+                        <textarea id="commandContent" placeholder="输入完整的命令内容..." required></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="commandDescription">指令描述</label>
+                        <textarea id="commandDescription" placeholder="这个命令的作用是什么？..."></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>标签分类</label>
+                        <div class="tag-input" id="tagContainer">
+                            <!-- 动态生成的标签 -->
+                        </div>
+                        <input type="text" id="tagInput" placeholder="输入标签后按回车添加">
+                    </div>
+                    
+                    <div class="actions">
+                        <button type="submit" class="btn">
+                            <i class="fas fa-save"></i> 保存指令
+                        </button>
+                        <button type="reset" class="btn btn-outline">
+                            <i class="fas fa-undo"></i> 重置表单
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- 指令管理面板 -->
+            <div class="panel">
+                <div class="controls">
+                    <h2 class="panel-title"><i class="fas fa-code"></i> 我的快捷指令</h2>
+                    
+                    <div class="search-box">
+                        <input type="text" id="searchInput" placeholder="搜索指令...">
+                        <button class="btn"><i class="fas fa-search"></i></button>
+                    </div>
+                </div>
+                
+                <div class="tag-filters" id="tagFilters">
+                    <div class="tag active" data-tag="all">全部</div>
+                    <div class="tag" data-tag="git">Git</div>
+                    <div class="tag" data-tag="npm">NPM</div>
+                    <div class="tag" data-tag="linux">Linux</div>
+                    <div class="tag" data-tag="docker">Docker</div>
+                </div>
+                
+                <div class="instructions-grid" id="instructionsContainer">
+                    <!-- 指令卡片将通过JavaScript动态生成 -->
+                    <div class="no-data">
+                        <i class="fas fa-code"></i>
+                        <h3>暂无快捷指令</h3>
+                        <p>请添加快捷指令，它们将显示在这里</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 编辑指令模态框 -->
+    <div class="modal" id="editModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">编辑指令</h3>
+                <button class="modal-close" id="closeEditModal">&times;</button>
+            </div>
+            <form id="editInstructionForm">
+                <input type="hidden" id="editId">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="editCommandName">指令名称</label>
+                        <input type="text" id="editCommandName" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="editCommandContent">指令内容</label>
+                        <textarea id="editCommandContent" required></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="editCommandDescription">指令描述</label>
+                        <textarea id="editCommandDescription"></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>标签分类</label>
+                        <div class="tag-input" id="editTagContainer">
+                            <!-- 动态生成的标签 -->
+                        </div>
+                        <input type="text" id="editTagInput" placeholder="输入标签后按回车添加">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline" id="cancelEditBtn">取消</button>
+                    <button type="submit" class="btn">保存更改</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- 删除确认模态框 -->
+    <div class="modal" id="deleteModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">确认删除</h3>
+                <button class="modal-close" id="closeDeleteModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>确定要删除这个指令吗？此操作不可撤销。</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline" id="cancelDeleteBtn">取消</button>
+                <button type="button" class="btn btn-danger" id="confirmDeleteBtn">删除</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 操作提示 -->
+    <div class="toast" id="toast">操作成功！</div>
+
+    <script>
+        // 初始化示例数据
+        const sampleData = [
+            {
+                id: 1,
+                name: "Git提交",
+                content: "git commit -m '提交信息'",
+                description: "提交暂存区的更改到本地仓库",
+                tags: ["git", "version-control"]
+            },
+            {
+                id: 2,
+                name: "安装依赖",
+                content: "npm install package-name",
+                description: "安装指定的npm包作为项目依赖",
+                tags: ["npm", "javascript"]
+            },
+            {
+                id: 3,
+                name: "目录列表",
+                content: "ls -la",
+                description: "列出当前目录下的所有文件和文件夹（包括隐藏文件）",
+                tags: ["linux", "bash"]
+            }
+        ];
+
+        // 当前选中的指令ID（用于编辑/删除）
+        let currentInstructionId = null;
+        
+        // 所有标签集合
+        let allTags = new Set(["git", "npm", "linux", "docker", "javascript", "version-control", "bash"]);
+
+        // DOM 元素
+        const instructionsContainer = document.getElementById('instructionsContainer');
+        const addInstructionForm = document.getElementById('addInstructionForm');
+        const editInstructionForm = document.getElementById('editInstructionForm');
+        const editModal = document.getElementById('editModal');
+        const deleteModal = document.getElementById('deleteModal');
+        const tagFilters = document.getElementById('tagFilters');
+        const searchInput = document.getElementById('searchInput');
+        const tagContainer = document.getElementById('tagContainer');
+        const tagInput = document.getElementById('tagInput');
+        const editTagContainer = document.getElementById('editTagContainer');
+        const editTagInput = document.getElementById('editTagInput');
+        const toast = document.getElementById('toast');
+
+        // 初始化应用
+        document.addEventListener('DOMContentLoaded', () => {
+            initApp();
+            renderTagFilters();
+        });
+
+        // 初始化应用
+        function initApp() {
+            loadInstructions();
+            setupEventListeners();
+        }
+
+        // 设置事件监听器
+        function setupEventListeners() {
+            // 添加新指令
+            addInstructionForm.addEventListener('submit', handleAddInstruction);
+            
+            // 编辑指令
+            editInstructionForm.addEventListener('submit', handleEditInstruction);
+            
+            // 关闭模态框
+            document.getElementById('closeEditModal').addEventListener('click', () => editModal.classList.remove('show'));
+            document.getElementById('closeDeleteModal').addEventListener('click', () => deleteModal.classList.remove('show'));
+            document.getElementById('cancelEditBtn').addEventListener('click', () => editModal.classList.remove('show'));
+            document.getElementById('cancelDeleteBtn').addEventListener('click', () => deleteModal.classList.remove('show'));
+            
+            // 搜索功能
+            searchInput.addEventListener('input', handleSearch);
+            
+            // 标签筛选
+            document.querySelectorAll('.tag').forEach(tag => {
+                tag.addEventListener('click', handleTagFilter);
+            });
+            
+            // 标签输入
+            tagInput.addEventListener('keydown', handleTagInput);
+            editTagInput.addEventListener('keydown', handleEditTagInput);
+        }
+
+        // 从本地存储加载指令
+        function loadInstructions() {
+            let instructions = JSON.parse(localStorage.getItem('instructions')) || sampleData;
+            renderInstructions(instructions);
+        }
+
+        // 渲染指令列表
+        function renderInstructions(instructions) {
+            instructionsContainer.innerHTML = '';
+            
+            if (instructions.length === 0) {
+                instructionsContainer.innerHTML = `
+                    <div class="no-data">
+                        <i class="fas fa-code"></i>
+                        <h3>没有找到指令</h3>
+                        <p>尝试修改搜索条件或添加新指令</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            instructions.forEach(instruction => {
+                const card = document.createElement('div');
+                card.className = 'instruction-card';
+                card.innerHTML = `
+                    <div class="card-header">
+                        <div class="card-title">
+                            ${instruction.name}
+                            <div>
+                                <button class="btn btn-sm btn-outline edit-btn" data-id="${instruction.id}">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="btn btn-sm btn-outline btn-danger delete-btn" data-id="${instruction.id}">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-tags">
+                            ${instruction.tags.map(tag => `<span class="card-tag">${tag}</span>`).join('')}
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-content">${instruction.description || '暂无描述'}</p>
+                        <div class="command-content">
+                            ${instruction.content}
+                            <span class="copy-btn" data-command="${encodeURIComponent(instruction.content)}">
+                                <i class="far fa-copy"></i>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <span>创建于: ${new Date().toLocaleDateString()}</span>
+                        <span class="copy-btn" data-command="${encodeURIComponent(instruction.content)}">
+                            复制 <i class="far fa-copy"></i>
+                        </span>
+                    </div>
+                `;
+                
+                instructionsContainer.appendChild(card);
+            });
+            
+            // 添加编辑/删除按钮事件
+            document.querySelectorAll('.edit-btn').forEach(btn => {
+                btn.addEventListener('click', () => openEditModal(btn.dataset.id));
+            });
+            
+            document.querySelectorAll('.delete-btn').forEach(btn => {
+                btn.addEventListener('click', () => openDeleteModal(btn.dataset.id));
+            });
+            
+            // 添加复制按钮事件
+            document.querySelectorAll('.copy-btn').forEach(btn => {
+                btn.addEventListener('click', () => copyToClipboard(decodeURIComponent(btn.dataset.command)));
+            });
+        }
+
+        // 打开编辑模态框
+        function openEditModal(id) {
+            const instructions = JSON.parse(localStorage.getItem('instructions')) || [];
+            const instruction = instructions.find(item => item.id == id);
+            
+            if (instruction) {
+                currentInstructionId = id;
+                document.getElementById('editId').value = id;
+                document.getElementById('editCommandName').value = instruction.name;
+                document.getElementById('editCommandContent').value = instruction.content;
+                document.getElementById('editCommandDescription').value = instruction.description || '';
+                
+                // 渲染标签
+                editTagContainer.innerHTML = '';
+                if (instruction.tags && instruction.tags.length > 0) {
+                    instruction.tags.forEach(tag => {
+                        addTagToContainer(tag, editTagContainer, true);
+                    });
+                }
+                
+                editModal.classList.add('show');
+            }
+        }
+
+        // 打开删除模态框
+        function openDeleteModal(id) {
+            currentInstructionId = id;
+            deleteModal.classList.add('show');
+        }
+
+        // 处理添加新指令
+        function handleAddInstruction(e) {
+            e.preventDefault();
+            
+            const name = document.getElementById('commandName').value;
+            const content = document.getElementById('commandContent').value;
+            const description = document.getElementById('commandDescription').value;
+            
+            // 获取标签
+            const tags = Array.from(tagContainer.querySelectorAll('.tag-item')).map(item => item.textContent.split('×')[0].trim());
+            
+            if (!name || !content) {
+                showToast('指令名称和内容不能为空！', true);
+                return;
+            }
+            
+            const instructions = JSON.parse(localStorage.getItem('instructions')) || [];
+            const newId = instructions.length > 0 ? Math.max(...instructions.map(i => i.id)) + 1 : 1;
+            
+            const newInstruction = {
+                id: newId,
+                name,
+                content,
+                description,
+                tags
+            };
+            
+            instructions.push(newInstruction);
+            localStorage.setItem('instructions', JSON.stringify(instructions));
+            
+            // 更新标签集合
+            tags.forEach(tag => allTags.add(tag));
+            renderTagFilters();
+            
+            renderInstructions(instructions);
+            addInstructionForm.reset();
+            
+            // 清除标签容器
+            tagContainer.innerHTML = '';
+            
+            showToast('指令添加成功！');
+        }
+
+        // 处理编辑指令
+        function handleEditInstruction(e) {
+            e.preventDefault();
+            
+            const id = document.getElementById('editId').value;
+            const name = document.getElementById('editCommandName').value;
+            const content = document.getElementById('editCommandContent').value;
+            const description = document.getElementById('editCommandDescription').value;
+            
+            // 获取标签
+            const tags = Array.from(editTagContainer.querySelectorAll('.tag-item')).map(item => item.textContent.split('×')[0].trim());
+            
+            if (!name || !content) {
+                showToast('指令名称和内容不能为空！', true);
+                return;
+            }
+            
+            let instructions = JSON.parse(localStorage.getItem('instructions')) || [];
+            const index = instructions.findIndex(item => item.id == id);
+            
+            if (index !== -1) {
+                instructions[index] = {
+                    ...instructions[index],
+                    name,
+                    content,
+                    description,
+                    tags
+                };
+                
+                localStorage.setItem('instructions', JSON.stringify(instructions));
+                
+                // 更新标签集合
+                tags.forEach(tag => allTags.add(tag));
+                renderTagFilters();
+                
+                renderInstructions(instructions);
+                editModal.classList.remove('show');
+                
+                showToast('指令更新成功！');
+            }
+        }
+
+        // 处理删除指令
+        document.getElementById('confirmDeleteBtn').addEventListener('click', () => {
+            let instructions = JSON.parse(localStorage.getItem('instructions')) || [];
+            instructions = instructions.filter(item => item.id != currentInstructionId);
+            
+            localStorage.setItem('instructions', JSON.stringify(instructions));
+            renderInstructions(instructions);
+            
+            deleteModal.classList.remove('show');
+            showToast('指令已删除！');
+        });
+
+        // 处理搜索
+        function handleSearch() {
+            const searchTerm = searchInput.value.toLowerCase();
+            const instructions = JSON.parse(localStorage.getItem('instructions')) || [];
+            
+            if (!searchTerm) {
+                renderInstructions(instructions);
+                return;
+            }
+            
+            const filtered = instructions.filter(instruction => 
+                instruction.name.toLowerCase().includes(searchTerm) || 
+                instruction.content.toLowerCase().includes(searchTerm) ||
+                (instruction.description && instruction.description.toLowerCase().includes(searchTerm)) ||
+                (instruction.tags && instruction.tags.some(tag => tag.toLowerCase().includes(searchTerm)))
+            );
+            
+            renderInstructions(filtered);
+        }
+
+        // 处理标签筛选
+        function handleTagFilter(e) {
+            const selectedTag = e.target.dataset.tag;
+            
+            // 更新活动标签
+            document.querySelectorAll('.tag').forEach(tag => {
+                tag.classList.remove('active');
+            });
+            e.target.classList.add('active');
+            
+            if (selectedTag === 'all') {
+                loadInstructions();
+                return;
+            }
+            
+            const instructions = JSON.parse(localStorage.getItem('instructions')) || [];
+            const filtered = instructions.filter(instruction => 
+                instruction.tags && instruction.tags.includes(selectedTag)
+            );
+            
+            renderInstructions(filtered);
+        }
+
+        // 处理标签输入
+        function handleTagInput(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                const tag = tagInput.value.trim();
+                
+                if (tag && !Array.from(tagContainer.querySelectorAll('.tag-item')).some(item => 
+                    item.textContent.split('×')[0].trim() === tag)) {
+                    addTagToContainer(tag, tagContainer);
+                    tagInput.value = '';
+                }
+            }
+        }
+
+        // 处理编辑标签输入
+        function handleEditTagInput(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                const tag = editTagInput.value.trim();
+                
+                if (tag && !Array.from(editTagContainer.querySelectorAll('.tag-item')).some(item => 
+                    item.textContent.split('×')[0].trim() === tag)) {
+                    addTagToContainer(tag, editTagContainer, true);
+                    editTagInput.value = '';
+                }
+            }
+        }
+
+        // 添加标签到容器
+        function addTagToContainer(tag, container, isEdit = false) {
+            if (!tag) return;
+            
+            const tagItem = document.createElement('span');
+            tagItem.className = 'tag-item';
+            tagItem.innerHTML = `
+                ${tag}
+                <span class="remove-tag">×</span>
+            `;
+            
+            // 添加删除标签事件
+            tagItem.querySelector('.remove-tag').addEventListener('click', () => {
+                tagItem.remove();
+            });
+            
+            container.appendChild(tagItem);
+        }
+
+        // 渲染标签筛选器
+        function renderTagFilters() {
+            // 仅保留示例标签，实际应用中应使用allTags
+            // 在实际应用中，可以取消下面这行注释
+            // tagFilters.innerHTML = `<div class="tag active" data-tag="all">全部</div>${Array.from(allTags).map(tag => `<div class="tag" data-tag="${tag}">${tag}</div>`).join('')}`;
+            
+            // 重新绑定事件
+            document.querySelectorAll('.tag').forEach(tag => {
+                tag.addEventListener('click', handleTagFilter);
+            });
+        }
+
+        // 复制到剪贴板
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text)
+                .then(() => showToast('已复制到剪贴板！'))
+                .catch(err => showToast('复制失败: ' + err, true));
+        }
+
+        // 显示操作提示
+        function showToast(message, isError = false) {
+            toast.textContent = message;
+            toast.style.backgroundColor = isError ? '#e63946' : '#4361ee';
+            toast.classList.add('show');
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
